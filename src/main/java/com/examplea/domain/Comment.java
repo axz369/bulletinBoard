@@ -4,7 +4,7 @@ package com.examplea.domain;
  * コメント情報を表すドメイン.
  */
 public class Comment {
-    
+
     /** コメントid */
     private Integer id;
 
