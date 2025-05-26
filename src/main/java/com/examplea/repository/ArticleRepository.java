@@ -1,6 +1,7 @@
 package com.examplea.repository;
 
 import com.examplea.domain.Article;
+import com.examplea.domain.Comment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +29,10 @@ public class ArticleRepository {
     };
 
     private final NamedParameterJdbcTemplate template;
-    public ArticleRepository(NamedParameterJdbcTemplate template) {
+    private final CommentRepository commentRepository;
+    public ArticleRepository(NamedParameterJdbcTemplate template, CommentRepository commentRepository) {
         this.template = template;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -38,6 +42,9 @@ public class ArticleRepository {
      * @return 記事一覧 記事が存在しない場合はサイズ0の記事一覧を返す
      */
     public List<Article> findAll(){
+
+
+
         String sql = """
                 select
                 id,name,content
@@ -45,7 +52,17 @@ public class ArticleRepository {
                 order by id desc
                 ;
                 """;
-        return template.query(sql,ARTICLE_ROW_MAPPER);
+
+
+        List<Article> articleList = template.query(sql,ARTICLE_ROW_MAPPER);
+
+        //記事のコメントを取得
+        for(Article article : articleList){
+            List<Comment> commentList = commentRepository.findByArticleId(article.getId());
+            article.setCommentList(commentList);
+        }
+
+        return articleList;
     }
 
     /**

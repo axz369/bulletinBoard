@@ -1,6 +1,5 @@
 package com.examplea.repository;
 
-import com.examplea.domain.Article;
 import com.examplea.domain.Comment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -42,15 +41,15 @@ public class CommentRepository {
      */
     public List<Comment> findByArticleId(int articleId){
         String sql = """
-                select
-                id,name,content,articleId
-                from comments
-                where article_id = :articleId
-                order by id
+                SELECT
+                id,name,content,article_id
+                FROM comments
+                WHERE article_id = :articleId
+                ORDER BY id
                 ;
                 """;
         SqlParameterSource param = new MapSqlParameterSource().addValue("articleId", articleId);
-        return template.query(sql,COMMENT_ROW_MAPPER);
+        return template.query(sql,param,COMMENT_ROW_MAPPER);
     }
 
 

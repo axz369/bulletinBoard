@@ -13,7 +13,7 @@ import java.util.List;
  * 記事情報を操作するコントローラ.
  */
 @Controller
-@RequestMapping("article")
+@RequestMapping("/article")
 public class ArticleController {
 
     private final ArticleRepository articleRepository;
@@ -27,7 +27,7 @@ public class ArticleController {
     public String index(Model model){
         List<Article> articleList = articleRepository.findAll();
         model.addAttribute("articleList",articleList);
-        //System.out.println(articleList);
+        System.out.println(articleList);
         return "index";
     }
 }
