@@ -14,7 +14,7 @@ public class CommentForm {
     private String content;
 
 
-    
+
     // getter setter
     public Integer getArticleId() {
         return articleId;
