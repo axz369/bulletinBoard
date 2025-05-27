@@ -140,10 +140,8 @@ public class ArticleRepository {
      * @param id 削除したい記事のid
      */
     public void deleteById(int id){
-        //外部キー制約のエラー回避のため記事に付随するコメントを記事より先に削除
-        commentRepository.deleteById(id);
-
         //記事を削除
+        //ON DELETE CASCADE制約により付随するコメントも削除される
         String sql = """
                 DELETE FROM articles
                 WHERE id = :id
