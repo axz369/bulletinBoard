@@ -42,9 +42,6 @@ public class ArticleRepository {
      * @return 記事一覧 記事が存在しない場合はサイズ0の記事一覧を返す
      */
     public List<Article> findAll(){
-
-
-
         String sql = """
                 select
                 id,name,content
@@ -52,8 +49,6 @@ public class ArticleRepository {
                 order by id desc
                 ;
                 """;
-
-
         List<Article> articleList = template.query(sql,ARTICLE_ROW_MAPPER);
 
         //記事のコメントを取得
@@ -89,6 +84,10 @@ public class ArticleRepository {
      * @param id 削除したい記事のid
      */
     public void deleteById(int id){
+        //外部キー制約のエラー回避のため記事に付随するコメントを記事より先に削除
+        commentRepository.deleteById(id);
+
+        //記事を削除
         String sql = """
                 DELETE FROM articles
                 WHERE id = :id

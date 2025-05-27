@@ -40,7 +40,6 @@ public class ArticleController {
     /**
      * 記事一覧画面を表示する.
      *
-     * @param model モデル
      * @return 記事一覧と投稿画面
      */
     @GetMapping("")
@@ -52,6 +51,12 @@ public class ArticleController {
     }
 
 
+    /**
+     * 記事を投稿する.
+     *
+     * @param form 記事フォーム
+     * @return 記事一覧画面
+     */
     @PostMapping("/post-article")
     public String postArticle(ArticleForm form){
         Article article = new Article();
@@ -74,6 +79,19 @@ public class ArticleController {
         BeanUtils.copyProperties(form, comment);
         //実行
         commentRepository.insert(comment);
+        return "redirect:/article";
+    }
+
+
+    /**
+     * 記事を削除する.
+     *
+     * @param articleId 記事id
+     * @return 記事一覧画面
+     */
+    @PostMapping("/delete-article")
+    public String deleteArticle(Integer articleId){
+        articleRepository.deleteById(articleId);
         return "redirect:/article";
     }
 }
