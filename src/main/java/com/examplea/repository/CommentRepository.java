@@ -64,7 +64,7 @@ public class CommentRepository {
 
         String sql = """
                 INSERT INTO comments(name,content,article_id)
-                VALUES(:name, :content, :article_id)
+                VALUES(:name, :content, :articleId)
                 ;
                 """;
         template.update(sql,param);

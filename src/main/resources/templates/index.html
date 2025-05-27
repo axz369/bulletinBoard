@@ -5,7 +5,8 @@
     <title>Title</title>
   </head>
   <body>
-    <form th:action="@{/post}" method="post">
+    <!-- 記事投稿フォーム -->
+    <form th:action="@{/article/post-article}" method="post">
       <label for="articleName">投稿者名 : </label>
       <input type="text" name="articleName" id="articleName" />
       <br />
@@ -20,22 +21,40 @@
       <br />
 
       <button>記事投稿</button>
+    </form>
 
-      <hr />
+    <hr />
 
-      <div th:each="article : ${articleList}">
-        <p>投稿者名 : <span th:text="${article.name}"></span></p>
-        <p>投稿内容 : <br /><span th:text="${article.content}"></span></p>
+    <!-- 記事の表示 -->
+    <div th:each="article : ${application.articleList}">
+      <p>投稿者名 : <span th:text="${article.name}"></span></p>
+      <p>投稿内容 : <br /><span th:text="${article.content}"></span></p>
+      <br />
+
+      <!-- コメントの表示 -->
+      <div th:each="comment : ${article.commentList}">
+        <p>コメント者名 : <span th:text="${comment.name}"></span></p>
+        <p>コメント内容 :</p>
+        <p th:text="${comment.content}"></p>
+        <br />
+      </div>
+
+      <!-- コメント投稿フォーム -->
+      <form th:action="@{/article/post-comment}" method="post">
+        <!-- hiddenで記事idを送信 -->
+        <input type="hidden" name="articleId" th:value="${article.id}" />
+
+        <label for="name">名前 : </label>
+        <input type="text" name="name" id="name" />
         <br />
 
-        <div th:each="comment : ${article.commentList}">
-          <p>コメント者名 : <span th:text="${comment.name}"></span></p>
-          <p>コメント内容 :</p>
-          <p th:text="${comment.content}"></p>
-          <br />
-        </div>
-        <hr />
-      </div>
-    </form>
+        <label for="content">コメント : </label>
+        <textarea name="content" id="content" rows="3" cols="30"></textarea>
+        <br />
+
+        <button>コメント投稿</button>
+      </form>
+      <hr />
+    </div>
   </body>
 </html>

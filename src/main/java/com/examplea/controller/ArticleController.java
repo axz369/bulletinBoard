@@ -1,10 +1,17 @@
 package com.examplea.controller;
 
 import com.examplea.domain.Article;
+import com.examplea.domain.Comment;
+import com.examplea.form.CommentForm;
 import com.examplea.repository.ArticleRepository;
+import com.examplea.repository.CommentRepository;
+import jakarta.servlet.ServletContext;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -16,18 +23,46 @@ import java.util.List;
 @RequestMapping("/article")
 public class ArticleController {
 
+    //Applicationスコープを使うための設定
+    @Autowired
+    private ServletContext application;
+
+
     private final ArticleRepository articleRepository;
-    public ArticleController(ArticleRepository articleRepository){
+    private final CommentRepository commentRepository;
+    public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository){
         this.articleRepository = articleRepository;
+        this.commentRepository = commentRepository;
     }
 
 
-
+    /**
+     * 記事一覧画面を表示する.
+     *
+     * @param model モデル
+     * @return 記事一覧と投稿画面
+     */
     @GetMapping("")
     public String index(Model model){
         List<Article> articleList = articleRepository.findAll();
-        model.addAttribute("articleList",articleList);
-        System.out.println(articleList);
+        application.setAttribute("articleList",articleList);
         return "index";
+    }
+
+
+    /**
+     * コメントを投稿する.
+     *
+     * @param form コメントフォーム
+     * @param model モデル
+     * @return 記事一覧画面
+     */
+    @PostMapping("/post-comment")
+    public String postComment(CommentForm form, Model model){
+        Comment comment = new Comment();
+        BeanUtils.copyProperties(form, comment);
+        //実行
+        commentRepository.insert(comment);
+        return "redirect:/article";
     }
 }
