@@ -37,11 +37,14 @@ public class ArticleRepository {
     private static final ResultSetExtractor<List<Article>> ARTICLE_WITH_COMMENTS_EXTRACTOR = rs -> {
         List<Article> articleList = new ArrayList<>();
 
+        //検索結果を一行ずつ見ていく
         while (rs.next()) {
+            //注目行の記事idを取得
             int articleId = rs.getInt("a_id");
 
-            // 既に同じ記事があるならそれを入れる
             Article article = null;
+            // 注目行のarticleIdと同じ記事がarticleListに存在するかをチェック
+            // 既に同じ記事があるならそれを入れる
             for (Article a : articleList) {
                 if (a.getId() == articleId) {
                     article = a;
@@ -49,7 +52,7 @@ public class ArticleRepository {
                 }
             }
 
-            // 新しい記事のrowなら新しくArticleオブジェクトを作成
+            // 注目行の記事が初めて出てきた記事なら新しくArticleオブジェクトを作成
             if (article == null) {
                 article = new Article();
                 article.setId(articleId);
@@ -60,8 +63,9 @@ public class ArticleRepository {
             }
 
             // コメントがあれば追加
-            int commentId = rs.getInt("c_id");
-            if (!rs.wasNull()) {
+            // LEFT OUTER JOINしているので記事に対するコメントがないならコメントのカラムは歯抜け(null)になる
+            Integer commentId = (Integer)rs.getObject("c_id");
+            if (commentId != null) {
                 Comment comment = new Comment();
                 comment.setId(commentId);
                 comment.setName(rs.getString("c_name"));
