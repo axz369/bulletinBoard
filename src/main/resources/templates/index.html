@@ -11,18 +11,12 @@
       method="post"
       th:object="${articleForm}"
     >
-      <div
-        th:errors="*{name}"
-        style="color: red"
-      ></div>
+      <div th:errors="*{name}" style="color: red"></div>
       <label for="name">投稿者名 : </label>
       <input type="text" name="name" id="name" th:field="*{name}" />
       <br />
 
-      <div
-        th:errors="*{content}"
-        style="color: red"
-      ></div>
+      <div th:errors="*{content}" style="color: red"></div>
       <label for="content">投稿内容 : </label>
       <textarea
         name="content"
@@ -69,18 +63,20 @@
         <!-- hiddenで記事idを送信 -->
         <input type="hidden" name="articleId" th:value="${article.id}" />
 
-        <div
-          th:errors="*{name}"
-          style="color: red"
-        ></div>
+        <!-- エラーが起きたコメントフォームにのみエラーメッセージを表示(名前) -->
+        <div th:if="${articleIdOfErrorComment} == ${article.id}">
+          <p th:errors="*{name}" style="color: red"></p>
+        </div>
+
         <label for="name">名前 : </label>
         <input type="text" name="name" id="name" th:field="*{name}" />
         <br />
 
-        <div
-          th:errors="*{content}"
-          style="color: red"
-        ></div>
+        <!-- エラーが起きたコメントフォームにのみエラーメッセージを表示(内容) -->
+        <div th:if="${articleIdOfErrorComment} == ${article.id}">
+          <p th:errors="*{content}" style="color: red"></p>
+        </div>
+
         <label for="content">コメント : </label>
         <textarea
           name="content"

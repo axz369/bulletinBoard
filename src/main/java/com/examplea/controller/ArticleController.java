@@ -81,6 +81,10 @@ public class ArticleController {
 
         //一つでもエラーがあればフォーム画面に戻る
         if(commentResult.hasErrors()){
+
+            // どの記事のコメントフォームでエラーが起きたか記録
+            model.addAttribute("articleIdOfErrorComment", commentForm.getArticleId());
+
             return index(articleForm,commentForm,model);
         }
 
