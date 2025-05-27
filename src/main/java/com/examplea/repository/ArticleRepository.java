@@ -156,7 +156,7 @@ public class ArticleRepository {
      *
      * @return 記事一覧
      */
-    public List<Article> findByArticleWithComments(){
+    public List<Article> findAllWithComments(){
         String sql = """
                 SELECT
                  a.id as a_id

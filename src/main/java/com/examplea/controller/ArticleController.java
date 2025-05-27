@@ -9,6 +9,8 @@ import com.examplea.repository.CommentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,9 +39,9 @@ public class ArticleController {
      * @return 記事一覧と投稿画面
      */
     @GetMapping("")
-    public String index(Model model){
+    public String index(ArticleForm articleForm, CommentForm commentForm, Model model){
         //表示するたびに最新の記事一覧を取得
-        List<Article> articleList = articleRepository.findByArticleWithComments();
+        List<Article> articleList = articleRepository.findAllWithComments();
         model.addAttribute("articleList",articleList);
         return "index";
     }
@@ -53,7 +55,16 @@ public class ArticleController {
      * @return 記事一覧画面
      */
     @PostMapping("/insert-article")
-    public String insertArticle(ArticleForm form){
+    public String insertArticle(@Validated ArticleForm form, BindingResult result, Model model){
+
+        //一つでもエラーがあればフォーム画面に戻る
+        if(result.hasErrors()){
+            // 記事一覧を再取得してmodelに入れる
+            List<Article> articleList = articleRepository.findAllWithComments();
+            model.addAttribute("articleList", articleList);
+            return "index";
+        }
+
         Article article = new Article();
         BeanUtils.copyProperties(form,article);
         //実行

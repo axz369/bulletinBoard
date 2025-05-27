@@ -1,5 +1,8 @@
 package com.examplea.form;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 /**
  * コメントのフォーム.
  */
@@ -8,9 +11,13 @@ public class CommentForm {
     private Integer articleId;
 
     /** 投稿者名 */
+    @NotBlank(message = "名前を入力してください")
+    @Size(max = 50, message = "名前は50文字以内で入力してください")
     private String name;
 
     /** 内容 */
+    @NotBlank(message = "コメント内容を入力してください")
+    @Size(max = 50, message = "コメント内容は1000文字以内で入力してください")
     private String content;
 
 
