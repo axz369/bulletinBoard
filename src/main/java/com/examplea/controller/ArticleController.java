@@ -44,7 +44,7 @@ public class ArticleController {
     @GetMapping("")
     public String index(){
         //表示するたびに最新の記事一覧を取得
-        List<Article> articleList = articleRepository.findAll();
+        List<Article> articleList = articleRepository.findByArticleWithComments();
         application.setAttribute("articleList",articleList);
         return "index";
     }

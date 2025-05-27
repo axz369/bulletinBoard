@@ -37,7 +37,7 @@ public class CommentRepository {
      * 記事idからコメントを取得.
      *
      * @param articleId 記事id
-     * @return コメントリスト
+     * @return コメントのリスト
      */
     public List<Comment> findByArticleId(int articleId){
         String sql = """
