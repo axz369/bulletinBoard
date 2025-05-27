@@ -51,22 +51,18 @@ public class ArticleController {
     /**
      * 記事を投稿する.
      *
-     * @param form 記事フォーム
+     * @param articleForm 記事フォーム
      * @return 記事一覧画面
      */
     @PostMapping("/insert-article")
-    public String insertArticle(@Validated ArticleForm form, BindingResult result, Model model){
+    public String insertArticle(@Validated ArticleForm articleForm, BindingResult articleResult, CommentForm commentForm,Model model){
 
-        //一つでもエラーがあればフォーム画面に戻る
-        if(result.hasErrors()){
-            // 記事一覧を再取得してmodelに入れる
-            List<Article> articleList = articleRepository.findAllWithComments();
-            model.addAttribute("articleList", articleList);
-            return "index";
+        if(articleResult.hasErrors()){
+            return index(articleForm,commentForm,model);
         }
 
         Article article = new Article();
-        BeanUtils.copyProperties(form,article);
+        BeanUtils.copyProperties(articleForm,article);
         //実行
         articleRepository.insert(article);
         return "redirect:/article";
@@ -77,13 +73,19 @@ public class ArticleController {
     /**
      * コメントを投稿する.
      *
-     * @param form コメントフォーム
+     * @param commentForm コメントフォーム
      * @return 記事一覧画面
      */
     @PostMapping("/insert-comment")
-    public String insertComment(CommentForm form){
+    public String insertComment(ArticleForm articleForm, @Validated CommentForm commentForm,BindingResult commentResult,Model model){
+
+        //一つでもエラーがあればフォーム画面に戻る
+        if(commentResult.hasErrors()){
+            return index(articleForm,commentForm,model);
+        }
+
         Comment comment = new Comment();
-        BeanUtils.copyProperties(form, comment);
+        BeanUtils.copyProperties(commentForm, comment);
         //実行
         commentRepository.insert(comment);
         return "redirect:/article";

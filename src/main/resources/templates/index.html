@@ -12,7 +12,6 @@
       th:object="${articleForm}"
     >
       <div
-        th:if="${#fields.hasErrors('name')}"
         th:errors="*{name}"
         style="color: red"
       ></div>
@@ -21,7 +20,6 @@
       <br />
 
       <div
-        th:if="${#fields.hasErrors('content')}"
         th:errors="*{content}"
         style="color: red"
       ></div>
@@ -63,16 +61,34 @@
       </div>
 
       <!-- コメント投稿フォーム -->
-      <form th:action="@{/article/insert-comment}" method="post">
+      <form
+        th:action="@{/article/insert-comment}"
+        method="post"
+        th:object="${commentForm}"
+      >
         <!-- hiddenで記事idを送信 -->
         <input type="hidden" name="articleId" th:value="${article.id}" />
 
+        <div
+          th:errors="*{name}"
+          style="color: red"
+        ></div>
         <label for="name">名前 : </label>
-        <input type="text" name="name" id="name" />
+        <input type="text" name="name" id="name" th:field="*{name}" />
         <br />
 
+        <div
+          th:errors="*{content}"
+          style="color: red"
+        ></div>
         <label for="content">コメント : </label>
-        <textarea name="content" id="content" rows="3" cols="30"></textarea>
+        <textarea
+          name="content"
+          id="content"
+          rows="3"
+          cols="30"
+          th:field="*{content}"
+        ></textarea>
         <br />
 
         <button>コメント投稿</button>
