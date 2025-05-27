@@ -6,7 +6,7 @@
   </head>
   <body>
     <!-- 記事投稿フォーム -->
-    <form th:action="@{/article/post-article}" method="post">
+    <form th:action="@{/article/insert-article}" method="post">
       <label for="name">投稿者名 : </label>
       <input type="text" name="name" id="name" />
       <br />
@@ -43,7 +43,7 @@
       </div>
 
       <!-- コメント投稿フォーム -->
-      <form th:action="@{/article/post-comment}" method="post">
+      <form th:action="@{/article/insert-comment}" method="post">
         <!-- hiddenで記事idを送信 -->
         <input type="hidden" name="articleId" th:value="${article.id}" />
 

@@ -10,7 +10,6 @@ import jakarta.servlet.ServletContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,8 +56,8 @@ public class ArticleController {
      * @param form 記事フォーム
      * @return 記事一覧画面
      */
-    @PostMapping("/post-article")
-    public String postArticle(ArticleForm form){
+    @PostMapping("/insert-article")
+    public String insertArticle(ArticleForm form){
         Article article = new Article();
         BeanUtils.copyProperties(form,article);
         //実行
@@ -73,8 +72,8 @@ public class ArticleController {
      * @param form コメントフォーム
      * @return 記事一覧画面
      */
-    @PostMapping("/post-comment")
-    public String postComment(CommentForm form){
+    @PostMapping("/insert-comment")
+    public String insertComment(CommentForm form){
         Comment comment = new Comment();
         BeanUtils.copyProperties(form, comment);
         //実行
