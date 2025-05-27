@@ -32,6 +32,7 @@ public class ArticleRepository {
     };
 
 
+
     /**
      * Commentオブジェクト付きのArticleオブジェクトを生成するエクストラクター.
      */
@@ -41,6 +42,8 @@ public class ArticleRepository {
         while (rs.next()) {
             int articleId = rs.getInt("a_id");
             Article article = articleMap.get(articleId);
+
+            //一行ずつ見てSQL結果の中から記事のIDを取得し、それがすでに articleMap に存在するかチェック
             if (article == null) {
                 article = new Article();
                 article.setId(articleId);
@@ -75,7 +78,7 @@ public class ArticleRepository {
 
 
     /**
-     * 記事一覧をidの降順で取得.
+     * 記事一覧をidの降順で取得する.
      *
      * @return 記事一覧 記事が存在しない場合はサイズ0の記事一覧を返す
      */
@@ -97,6 +100,8 @@ public class ArticleRepository {
         return articleList;
     }
 
+
+
     /**
      * 記事を投稿する.
      *
@@ -113,6 +118,7 @@ public class ArticleRepository {
                 """;
         template.update(sql,param);
     }
+
 
 
     /**
@@ -133,6 +139,7 @@ public class ArticleRepository {
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
         template.update(sql,param);
     }
+
 
 
     /**

@@ -28,12 +28,14 @@ public class ArticleController {
     private ServletContext application;
 
 
+
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     public ArticleController(ArticleRepository articleRepository, CommentRepository commentRepository){
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
     }
+
 
 
     /**
@@ -48,6 +50,7 @@ public class ArticleController {
         application.setAttribute("articleList",articleList);
         return "index";
     }
+
 
 
     /**
@@ -66,6 +69,7 @@ public class ArticleController {
     }
 
 
+
     /**
      * コメントを投稿する.
      *
@@ -81,6 +85,7 @@ public class ArticleController {
         return "redirect:/article";
     }
 
+    
 
     /**
      * 記事を削除する.

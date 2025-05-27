@@ -27,14 +27,17 @@ public class CommentRepository {
         return comment;
     };
 
+
+
     private final NamedParameterJdbcTemplate template;
     public CommentRepository(NamedParameterJdbcTemplate template) {
         this.template = template;
     }
 
 
+
     /**
-     * 記事idからコメントを取得.
+     * 記事idからコメントを取得する.
      *
      * @param articleId 記事id
      * @return コメントのリスト
@@ -53,15 +56,14 @@ public class CommentRepository {
     }
 
 
+
     /**
      * コメントを投稿する.
      *
      * @param comment コメント情報
      */
     public void insert(Comment comment){
-
         SqlParameterSource param = new BeanPropertySqlParameterSource(comment);
-
         String sql = """
                 INSERT INTO comments(name,content,article_id)
                 VALUES(:name, :content, :articleId)
@@ -69,6 +71,7 @@ public class CommentRepository {
                 """;
         template.update(sql,param);
     }
+
 
 
     /**
