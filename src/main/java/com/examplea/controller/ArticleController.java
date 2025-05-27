@@ -2,6 +2,7 @@ package com.examplea.controller;
 
 import com.examplea.domain.Article;
 import com.examplea.domain.Comment;
+import com.examplea.form.ArticleForm;
 import com.examplea.form.CommentForm;
 import com.examplea.repository.ArticleRepository;
 import com.examplea.repository.CommentRepository;
@@ -43,10 +44,21 @@ public class ArticleController {
      * @return 記事一覧と投稿画面
      */
     @GetMapping("")
-    public String index(Model model){
+    public String index(){
+        //表示するたびに最新の記事一覧を取得
         List<Article> articleList = articleRepository.findAll();
         application.setAttribute("articleList",articleList);
         return "index";
+    }
+
+
+    @PostMapping("/post-article")
+    public String postArticle(ArticleForm form){
+        Article article = new Article();
+        BeanUtils.copyProperties(form,article);
+        //実行
+        articleRepository.insert(article);
+        return "redirect:/article";
     }
 
 
@@ -54,11 +66,10 @@ public class ArticleController {
      * コメントを投稿する.
      *
      * @param form コメントフォーム
-     * @param model モデル
      * @return 記事一覧画面
      */
     @PostMapping("/post-comment")
-    public String postComment(CommentForm form, Model model){
+    public String postComment(CommentForm form){
         Comment comment = new Comment();
         BeanUtils.copyProperties(form, comment);
         //実行

@@ -7,17 +7,12 @@
   <body>
     <!-- 記事投稿フォーム -->
     <form th:action="@{/article/post-article}" method="post">
-      <label for="articleName">投稿者名 : </label>
-      <input type="text" name="articleName" id="articleName" />
+      <label for="name">投稿者名 : </label>
+      <input type="text" name="name" id="name" />
       <br />
 
-      <label for="articleContent">投稿内容 : </label>
-      <textarea
-        name="articleContent"
-        id="articleContent"
-        rows="3"
-        cols="30"
-      ></textarea>
+      <label for="content">投稿内容 : </label>
+      <textarea name="content" id="content" rows="3" cols="30"></textarea>
       <br />
 
       <button>記事投稿</button>
