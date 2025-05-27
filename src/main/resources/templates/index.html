@@ -21,7 +21,7 @@
     <hr />
 
     <!-- 記事の表示 -->
-    <div th:each="article : ${application.articleList}">
+    <div th:each="article : ${articleList}">
       <p>投稿者名 : <span th:text="${article.name}"></span></p>
       <p>投稿内容 : <br /><span th:text="${article.content}"></span></p>
       <br />

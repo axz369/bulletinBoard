@@ -6,10 +6,9 @@ import com.examplea.form.ArticleForm;
 import com.examplea.form.CommentForm;
 import com.examplea.repository.ArticleRepository;
 import com.examplea.repository.CommentRepository;
-import jakarta.servlet.ServletContext;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +21,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/article")
 public class ArticleController {
-
-    //Applicationスコープを使うための設定
-    @Autowired
-    private ServletContext application;
-
-
 
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
@@ -44,10 +37,10 @@ public class ArticleController {
      * @return 記事一覧と投稿画面
      */
     @GetMapping("")
-    public String index(){
+    public String index(Model model){
         //表示するたびに最新の記事一覧を取得
         List<Article> articleList = articleRepository.findByArticleWithComments();
-        application.setAttribute("articleList",articleList);
+        model.addAttribute("articleList",articleList);
         return "index";
     }
 
@@ -85,7 +78,7 @@ public class ArticleController {
         return "redirect:/article";
     }
 
-    
+
 
     /**
      * 記事を削除する.

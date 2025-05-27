@@ -37,22 +37,31 @@ public class ArticleRepository {
      * Commentオブジェクト付きのArticleオブジェクトを生成するエクストラクター.
      */
     private static final ResultSetExtractor<List<Article>> ARTICLE_WITH_COMMENTS_EXTRACTOR = rs -> {
-        Map<Integer, Article> articleMap = new LinkedHashMap<>();
+        List<Article> articleList = new ArrayList<>();
 
         while (rs.next()) {
             int articleId = rs.getInt("a_id");
-            Article article = articleMap.get(articleId);
 
-            //一行ずつ見てSQL結果の中から記事のIDを取得し、それがすでに articleMap に存在するかチェック
+            // 既に同じ記事があるならそれを入れる
+            Article article = null;
+            for (Article a : articleList) {
+                if (a.getId() == articleId) {
+                    article = a;
+                    break;
+                }
+            }
+
+            // 新しい記事のrowなら新しくArticleオブジェクトを作成
             if (article == null) {
                 article = new Article();
                 article.setId(articleId);
                 article.setName(rs.getString("a_name"));
                 article.setContent(rs.getString("a_content"));
                 article.setCommentList(new ArrayList<>());
-                articleMap.put(articleId, article);
+                articleList.add(article);
             }
 
+            // コメントがあれば追加
             int commentId = rs.getInt("c_id");
             if (!rs.wasNull()) {
                 Comment comment = new Comment();
@@ -63,8 +72,10 @@ public class ArticleRepository {
                 article.getCommentList().add(comment);
             }
         }
-        return new ArrayList<>(articleMap.values());
+
+        return articleList;
     };
+
 
 
 
