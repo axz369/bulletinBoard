@@ -57,12 +57,17 @@ public class ArticleController {
     @PostMapping("/insert-article")
     public String insertArticle(@Validated ArticleForm articleForm, BindingResult articleResult, CommentForm commentForm,Model model){
 
+        //一つでもエラーがあれば戻る
         if(articleResult.hasErrors()){
             return index(articleForm,commentForm,model);
         }
 
         Article article = new Article();
-        BeanUtils.copyProperties(articleForm,article);
+
+        //記事投稿者と内容を手動でマッピング
+        article.setName(articleForm.getArticleName());
+        article.setContent(articleForm.getArticleContent());
+
         //実行
         articleRepository.insert(article);
         return "redirect:/article";
@@ -79,13 +84,19 @@ public class ArticleController {
     @PostMapping("/insert-comment")
     public String insertComment(ArticleForm articleForm, @Validated CommentForm commentForm,BindingResult commentResult,Model model){
 
-        //一つでもエラーがあればフォーム画面に戻る
+        //一つでもエラーがあれば戻る
         if(commentResult.hasErrors()){
             return index(articleForm,commentForm,model);
         }
 
         Comment comment = new Comment();
-        BeanUtils.copyProperties(commentForm, comment);
+
+        //articleIdのみ自動でマッピング
+        BeanUtils.copyProperties(commentForm,comment);
+        //コメント投稿者と内容を手動でマッピング
+        comment.setName(commentForm.getCommentName());
+        comment.setContent(commentForm.getCommentContent());
+
         //実行
         commentRepository.insert(comment);
         return "redirect:/article";

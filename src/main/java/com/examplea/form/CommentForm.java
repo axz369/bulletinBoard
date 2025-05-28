@@ -13,12 +13,12 @@ public class CommentForm {
     /** 投稿者名 */
     @NotBlank(message = "名前を入力してください")
     @Size(max = 50, message = "名前は50文字以内で入力してください")
-    private String name;
+    private String commentName;
 
     /** 内容 */
     @NotBlank(message = "コメント内容を入力してください")
     @Size(max = 50, message = "コメント内容は1000文字以内で入力してください")
-    private String content;
+    private String commentContent;
 
 
 
@@ -31,20 +31,20 @@ public class CommentForm {
         this.articleId = articleId;
     }
 
-    public String getName() {
-        return name;
+    public String getCommentName() {
+        return commentName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCommentName(String commentName) {
+        this.commentName = commentName;
     }
 
-    public String getContent() {
-        return content;
+    public String getCommentContent() {
+        return commentContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setCommentContent(String commentContent) {
+        this.commentContent = commentContent;
     }
 
 
@@ -53,8 +53,8 @@ public class CommentForm {
     public String toString() {
         return "CommentForm{" +
                 "articleId=" + articleId +
-                ", name='" + name + '\'' +
-                ", content='" + content + '\'' +
+                ", commentName='" + commentName + '\'' +
+                ", commentContent='" + commentContent + '\'' +
                 '}';
     }
 }

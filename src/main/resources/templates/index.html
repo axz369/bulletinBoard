@@ -11,19 +11,18 @@
       method="post"
       th:object="${articleForm}"
     >
-      <div th:errors="*{name}" style="color: red"></div>
-      <label for="name">投稿者名 : </label>
-      <input type="text" name="name" id="name" th:field="*{name}" />
+      <div th:errors="*{articleName}" style="color: red"></div>
+      <label for="articleName">投稿者名 : </label>
+      <input type="text" id="articleName" th:field="*{articleName}" />
       <br />
 
-      <div th:errors="*{content}" style="color: red"></div>
-      <label for="content">投稿内容 : </label>
+      <div th:errors="*{articleContent}" style="color: red"></div>
+      <label for="articleContent">投稿内容 : </label>
       <textarea
-        name="content"
-        id="content"
+        id="articleContent"
         rows="3"
         cols="30"
-        th:field="*{content}"
+        th:field="*{articleContent}"
       ></textarea>
       <br />
 
@@ -63,23 +62,23 @@
         <!-- hiddenで記事idを送信 -->
         <input type="hidden" name="articleId" th:value="${article.id}" />
 
-        <!-- エラーが起きているフォーム(エラーメッセージと入力保持を表示) -->
+        <!-- エラーが起きているフォームにのみエラーメッセージと入力保持を表示 -->
         <div th:if="${commentForm.articleId} == ${article.id}">
           <!-- 名前 -->
-          <p th:errors="*{name}" style="color: red"></p>
-          <label for="name">名前 : </label>
-          <input type="text" th:field="*{name}" id="name" />
+          <p th:errors="*{commentName}" style="color: red"></p>
+          <label for="errCommentName">名前 : </label>
+          <input type="text" th:field="*{commentName}" id="errCommentName" />
 
           <!-- コメント -->
-          <p th:errors="*{content}" style="color: red"></p>
-          <label for="content"></label><br />
+          <p th:errors="*{commentContent}" style="color: red"></p>
+          <label for="errCommentContent"></label><br />
           <label>コメント : </label>
           <br />
           <textarea
-            th:field="*{content}"
+            th:field="*{commentContent}"
             rows="3"
             cols="30"
-            id="content"
+            id="errCommentContent"
           ></textarea>
           <br />
         </div>
@@ -87,14 +86,19 @@
         <!-- エラーが起きていないフォーム -->
         <div th:unless="${commentForm.articleId} == ${article.id}">
           <!-- 名前 -->
-          <label for="name">名前 : </label>
-          <input type="text" name="name" id="name" />
+          <label for="commentName">名前 : </label>
+          <input type="text" name="commentName" id="commentName" />
 
           <!-- コメント -->
-          <label for="content"></label><br />
+          <label for="commentContent"></label><br />
           <label>コメント : </label>
           <br />
-          <textarea name="content" rows="3" cols="30" id="content"></textarea>
+          <textarea
+            name="commentContent"
+            rows="3"
+            cols="30"
+            id="commentContent"
+          ></textarea>
           <br />
         </div>
         <button>コメント投稿</button>
