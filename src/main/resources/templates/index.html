@@ -105,7 +105,7 @@
           <!-- エラーが起きているフォームにのみエラーメッセージと入力保持を表示 -->
           <div th:if="${commentForm.articleId} == ${article.id}">
             <!-- 名前 -->
-            <p class="text-danger small" 　th:errors="*{commentName}"></p>
+            <p class="text-danger small" th:errors="*{commentName}"></p>
             <label class="form-label" for="errCommentName">名前 : </label>
             <input
               class="form-control"
