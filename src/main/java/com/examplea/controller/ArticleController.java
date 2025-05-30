@@ -6,7 +6,9 @@ import com.examplea.form.ArticleForm;
 import com.examplea.form.CommentForm;
 import com.examplea.repository.ArticleRepository;
 import com.examplea.repository.CommentRepository;
+import jakarta.servlet.ServletContext;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,8 +16,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 記事情報を操作するコントローラ.
@@ -23,6 +28,10 @@ import java.util.List;
 @Controller
 @RequestMapping("/article")
 public class ArticleController {
+
+    //Applicationスコープを使うための設定
+    @Autowired
+    private ServletContext application;
 
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
@@ -42,7 +51,14 @@ public class ArticleController {
     public String index(ArticleForm articleForm, CommentForm commentForm, Model model){
         //表示するたびに最新の記事一覧を取得
         List<Article> articleList = articleRepository.findAllWithComments();
+        Map<Integer, Integer> goodCountMap = new HashMap<>();
+        for (Article article : articleList) {
+            String key = "goodCount_" + article.getId();
+            Integer count = (Integer) application.getAttribute(key);
+            goodCountMap.put(article.getId(), count != null ? count : 0);
+        }
         model.addAttribute("articleList",articleList);
+        model.addAttribute("goodCountMap", goodCountMap);
         return "index";
     }
 
@@ -94,6 +110,7 @@ public class ArticleController {
         //articleIdのみ自動でマッピング
         BeanUtils.copyProperties(commentForm,comment);
         //コメント投稿者と内容を手動でマッピング
+        comment.setArticleId(Integer.parseInt(commentForm.getArticleId()));
         comment.setName(commentForm.getCommentName());
         comment.setContent(commentForm.getCommentContent());
 
@@ -114,5 +131,32 @@ public class ArticleController {
     public String deleteArticle(Integer articleId){
         articleRepository.deleteById(articleId);
         return "redirect:/article";
+    }
+
+
+    /**
+     * いいね追加
+     */
+    @PostMapping("/add-good")
+    @ResponseBody
+    public Map<String, Object> addGood(Integer articleId){
+        String key = "goodCount_" + articleId;
+
+        //既にある場合は取り出して+1,ないなら1から
+        Integer goodCount = (Integer) application.getAttribute(key);
+        if(goodCount == null) {
+            goodCount = 1;
+        }else{
+            goodCount++;
+        }
+
+        //applicationスコープに格納
+        application.setAttribute(key,goodCount);
+
+        //レスポンス
+        Map<String, Object> response = new HashMap<>();
+        response.put("articleId", articleId);
+        response.put("goodCount" ,goodCount);
+        return response;
     }
 }

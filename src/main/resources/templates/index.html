@@ -3,22 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <title>Title</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <body>
+  <body class="container my-4 bg-light">
+    <h1 class="text-center display-4 fw-bold mb-4">掲示板</h1>
+
     <!-- 記事投稿フォーム -->
     <form
+      class="mb-5"
       th:action="@{/article/insert-article}"
       method="post"
       th:object="${articleForm}"
     >
-      <div th:errors="*{articleName}" style="color: red"></div>
-      <label for="articleName">投稿者名 : </label>
-      <input type="text" id="articleName" th:field="*{articleName}" />
+      <div class="text-danger small" th:errors="*{articleName}"></div>
+      <label class="form-label" for="articleName">投稿者名 : </label>
+      <input
+        class="form-control"
+        type="text"
+        id="articleName"
+        th:field="*{articleName}"
+      />
       <br />
 
-      <div th:errors="*{articleContent}" style="color: red"></div>
-      <label for="articleContent">投稿内容 : </label>
+      <div class="text-danger small" th:errors="*{articleContent}"></div>
+      <label class="form-label" for="articleContent">投稿内容 : </label>
       <textarea
+        class="form-control"
         id="articleContent"
         rows="3"
         cols="30"
@@ -26,85 +39,133 @@
       ></textarea>
       <br />
 
-      <button>記事投稿</button>
+      <button type="button" id="goodButton" class="btn btn-primary">
+        記事投稿
+      </button>
     </form>
 
     <hr />
 
-    <!-- 記事の表示 -->
-    <div th:each="article : ${articleList}">
-      <p>投稿者名 : <span th:text="${article.name}"></span></p>
-      <p>投稿内容 : <br /><span th:text="${article.content}"></span></p>
-      <br />
+    <!-- 記事の一覧 -->
+    <div
+      class="card mb-4"
+      th:each="article : ${articleList}"
+      style="background-color: #e0e0e0"
+    >
+      <div class="card-body">
+        <!-- 記事の表示 -->
+        <div class="mb-5">
+          <p class="fw-bold fs-5">
+            投稿者名 : <span th:text="${article.name}"></span>
+          </p>
+          <p class="fw-bold fs-5">投稿内容 :</p>
+          <span th:text="${article.content}"></span>
+        </div>
 
-      <!-- 記事削除フォーム -->
-      <form th:action="@{/article/delete-article}" method="post">
-        <!-- hiddenで記事idを送信 -->
-        <input type="hidden" name="articleId" th:value="${article.id}" />
+        <!-- 記事削除フォーム -->
+        <form class="mb-5" th:action="@{/article/delete-article}" method="post">
+          <!-- hiddenで記事idを送信 -->
+          <input type="hidden" name="articleId" th:value="${article.id}" />
 
-        <button>記事削除</button>
-      </form>
+          <button class="btn btn-danger">記事削除</button>
+        </form>
 
-      <!-- コメントの表示 -->
-      <div th:each="comment : ${article.commentList}">
-        <p>コメント者名 : <span th:text="${comment.name}"></span></p>
-        <p>コメント内容 :</p>
-        <p th:text="${comment.content}"></p>
-        <br />
+        <!-- いいねボタンとカウント -->
+        <button
+          class="btn btn-primary goodButton"
+          th:attr="data-article-id=${article.id}"
+        >
+          いいね
+        </button>
+        <p
+          th:id="'goodCount-' + ${article.id}"
+          th:text="'いいね数: ' + ${goodCountMap[article.id]}"
+        ></p>
+
+        <!-- コメントの表示 -->
+        <div th:each="comment : ${article.commentList}">
+          <p class="fw-bold fs-5">
+            コメント者名 : <span th:text="${comment.name}"></span>
+          </p>
+          <p class="fw-bold fs-5">コメント内容 :</p>
+          <p th:text="${comment.content}"></p>
+          <br />
+        </div>
+
+        <!-- コメント投稿フォーム -->
+        <form
+          class="mb-5"
+          th:action="@{/article/insert-comment}"
+          method="post"
+          th:object="${commentForm}"
+        >
+          <!-- hiddenで記事idを送信 -->
+          <input type="hidden" name="articleId" th:value="${article.id}" />
+
+          <!-- エラーが起きているフォームにのみエラーメッセージと入力保持を表示 -->
+          <div th:if="${commentForm.articleId} == ${article.id}">
+            <!-- 名前 -->
+            <p class="text-danger small" 　th:errors="*{commentName}"></p>
+            <label class="form-label" for="errCommentName">名前 : </label>
+            <input
+              class="form-control"
+              type="text"
+              th:field="*{commentName}"
+              id="errCommentName"
+            /><br />
+
+            <!-- コメント -->
+            <p
+              class="text-danger small"
+              th:errors="*{commentContent}"
+              style="color: red"
+            ></p>
+            <label class="form-label" for="errCommentContent"></label>
+
+            <br />
+            <label class="form-label">コメント : </label>
+            <br />
+            <textarea
+              class="form-control"
+              th:field="*{commentContent}"
+              rows="3"
+              cols="30"
+              id="errCommentContent"
+            ></textarea>
+            <br />
+          </div>
+
+          <!-- エラーが起きていないフォーム -->
+          <div th:unless="${commentForm.articleId} == ${article.id}">
+            <!-- 名前 -->
+            <label class="form-label" for="commentName">名前 : </label>
+            <input
+              class="form-control"
+              type="text"
+              name="commentName"
+              id="commentName"
+            />
+            <br />
+            <!-- コメント -->
+            <label class="form-label" for="commentContent">コメント : </label>
+            <br />
+            <textarea
+              class="form-control"
+              name="commentContent"
+              rows="3"
+              cols="30"
+              id="commentContent"
+            ></textarea>
+            <br />
+          </div>
+          <button class="btn btn-info">コメント投稿</button>
+        </form>
+
+        <hr />
       </div>
-
-      <!-- コメント投稿フォーム -->
-      <form
-        th:action="@{/article/insert-comment}"
-        method="post"
-        th:object="${commentForm}"
-      >
-        <!-- hiddenで記事idを送信 -->
-        <input type="hidden" name="articleId" th:value="${article.id}" />
-
-        <!-- エラーが起きているフォームにのみエラーメッセージと入力保持を表示 -->
-        <div th:if="${commentForm.articleId} == ${article.id}">
-          <!-- 名前 -->
-          <p th:errors="*{commentName}" style="color: red"></p>
-          <label for="errCommentName">名前 : </label>
-          <input type="text" th:field="*{commentName}" id="errCommentName" />
-
-          <!-- コメント -->
-          <p th:errors="*{commentContent}" style="color: red"></p>
-          <label for="errCommentContent"></label><br />
-          <label>コメント : </label>
-          <br />
-          <textarea
-            th:field="*{commentContent}"
-            rows="3"
-            cols="30"
-            id="errCommentContent"
-          ></textarea>
-          <br />
-        </div>
-
-        <!-- エラーが起きていないフォーム -->
-        <div th:unless="${commentForm.articleId} == ${article.id}">
-          <!-- 名前 -->
-          <label for="commentName">名前 : </label>
-          <input type="text" name="commentName" id="commentName" />
-
-          <!-- コメント -->
-          <label for="commentContent"></label><br />
-          <label>コメント : </label>
-          <br />
-          <textarea
-            name="commentContent"
-            rows="3"
-            cols="30"
-            id="commentContent"
-          ></textarea>
-          <br />
-        </div>
-        <button>コメント投稿</button>
-      </form>
-
-      <hr />
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="js/goodButton.js"></script>
   </body>
 </html>

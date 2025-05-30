@@ -74,7 +74,6 @@ public class ArticleRepository {
                 article.getCommentList().add(comment);
             }
         }
-
         return articleList;
     };
 

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
  */
 public class CommentForm {
     /** 記事id */
-    private Integer articleId;
+    private String articleId;
 
     /** 投稿者名 */
     @NotBlank(message = "名前を入力してください")
@@ -23,11 +23,13 @@ public class CommentForm {
 
 
     // getter setter
-    public Integer getArticleId() {
+
+
+    public String getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(Integer articleId) {
+    public void setArticleId(String articleId) {
         this.articleId = articleId;
     }
 
