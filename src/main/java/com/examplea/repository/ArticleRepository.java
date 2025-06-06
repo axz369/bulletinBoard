@@ -18,6 +18,17 @@ import java.util.List;
  */
 @Repository
 public class ArticleRepository {
+
+    // DI
+    private final NamedParameterJdbcTemplate template;
+    private final CommentRepository commentRepository;
+    public ArticleRepository(NamedParameterJdbcTemplate template, CommentRepository commentRepository) {
+        this.template = template;
+        this.commentRepository = commentRepository;
+    }
+
+
+
     /**
      * Articleオブジェクトを生成するローマッパー.
      */
@@ -44,8 +55,8 @@ public class ArticleRepository {
 
             Article article = null;
             // 注目行のarticleIdと同じ記事がarticleListに存在するかをチェック
-            // 既に同じ記事があるならそれを入れる
             for (Article a : articleList) {
+                // 既に同じ記事があるならそれを入れる
                 if (a.getId() == articleId) {
                     article = a;
                     break;
@@ -58,19 +69,23 @@ public class ArticleRepository {
                 article.setId(articleId);
                 article.setName(rs.getString("a_name"));
                 article.setContent(rs.getString("a_content"));
+                //付随する空のコメントリストを新しく作成
                 article.setCommentList(new ArrayList<>());
+                //処理済み記事リストに追加
                 articleList.add(article);
             }
 
-            // コメントがあれば追加
+            //コメントカラムが存在すれば追加
             // LEFT OUTER JOINしているので記事に対するコメントがないならコメントのカラムは歯抜け(null)になる
             Integer commentId = (Integer)rs.getObject("c_id");
+            //nullを扱るためにObject(参照型)で受け取る
             if (commentId != null) {
                 Comment comment = new Comment();
                 comment.setId(commentId);
                 comment.setName(rs.getString("c_name"));
                 comment.setContent(rs.getString("c_content"));
                 comment.setArticleId(rs.getInt("c_article_id"));
+                //現在の注目記事のコメントリストにコメントを追加
                 article.getCommentList().add(comment);
             }
         }
@@ -80,12 +95,6 @@ public class ArticleRepository {
 
 
 
-    private final NamedParameterJdbcTemplate template;
-    private final CommentRepository commentRepository;
-    public ArticleRepository(NamedParameterJdbcTemplate template, CommentRepository commentRepository) {
-        this.template = template;
-        this.commentRepository = commentRepository;
-    }
 
 
 

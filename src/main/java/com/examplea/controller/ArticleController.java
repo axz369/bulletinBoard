@@ -78,9 +78,8 @@ public class ArticleController {
             return index(articleForm,commentForm,model);
         }
 
-        Article article = new Article();
-
         //記事投稿者と内容を手動でマッピング
+        Article article = new Article();
         article.setName(articleForm.getArticleName());
         article.setContent(articleForm.getArticleContent());
 
